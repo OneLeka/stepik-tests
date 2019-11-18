@@ -9,7 +9,6 @@ def fill_form():
     link = "http://suninjuly.github.io/find_xpath_form"
 
     try:
-
         browser = webdriver.Chrome()
         browser.get(link)
 
