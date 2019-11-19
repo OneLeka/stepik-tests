@@ -1,7 +1,7 @@
 from selenium import webdriver
 import math
 from selenium.webdriver.support.ui import Select
-
+import os
 import time
 
 
@@ -75,7 +75,9 @@ def click_box(browser):
 def get_attr(browser):
     x_element = browser.find_element_by_id('treasure')
     x = x_element.get_attribute('valuex')
+    print(x)
     y = calc(int(x))
+    print(y)
     answer_field = browser.find_element_by_id('answer')
     answer_field.send_keys(y)
     box = browser.find_element_by_id('robotCheckbox')
@@ -100,13 +102,7 @@ def options(browser):
     button.click()
 
 
-def ex_script(browser):
-    button = browser.find_element_by_tag_name("button")
-    button.click()
-    assert True
-
-
-def lesson2_2(browser):
+def scroll(browser):
     x_element = browser.find_element_by_id('input_value')
     x = int(x_element.text)
     y = calc(x)
@@ -123,17 +119,88 @@ def lesson2_2(browser):
     button.click()
 
 
-if __name__ == '__main__':
-    func, link = lesson2_2, 'http://SunInJuly.github.io/execute_script.html'
-    # link = "http://suninjuly.github.io/find_link_text"
-    # link = "http://suninjuly.github.io/find_xpath_form"
-    # link = 'http://suninjuly.github.io/selects1.html'
-    # link = 'http://suninjuly.github.io/math.html'
-    # link = "http://suninjuly.github.io/registration1.html"
-    # link = "http://suninjuly.github.io/huge_form.html"
-    # link = 'http://suninjuly.github.io/get_attribute.html'
-    # link = 'http://suninjuly.github.io/selects1.html'
+def add_file(browser):
+    fisrt = browser.find_element_by_name('firstname')
+    fisrt.send_keys('First')
+    second = browser.find_element_by_name('lastname')
+    second.send_keys('Second')
+    email = browser.find_element_by_name('email')
+    email.send_keys('email@mail.ru')
 
+    file_element = browser.find_element_by_id('file')
+    current_dir = os.path.abspath(os.path.dirname(__file__))  # получаем путь к директории текущего исполняемого файла
+    file_path = os.path.join(current_dir, 'empty.txt')  # добавляем к этому пути имя файла
+    file_element.send_keys(file_path)
+
+    button = browser.find_element_by_tag_name('button')
+    button.click()
+
+
+def alert(browser):
+    button = browser.find_element_by_tag_name('button')
+    button.click()
+
+    alert = browser.switch_to.alert
+    # alert_text = alert.text
+    alert.accept()
+
+    x_element = browser.find_element_by_id('input_value')
+    x = int(x_element.text)
+    y = calc(x)
+    answer = browser.find_element_by_id('answer')
+    answer.send_keys(str(y))
+
+    button = browser.find_element_by_tag_name('button')
+    button.click()
+
+    alert = browser.switch_to.alert
+    alert_text = alert.text
+    result = alert_text.split(' ')[-1]
+    print(result)
+
+
+    # confirm = browser.switch_to.alert
+    # confirm.accept()
+    # confirm.dismiss()
+
+    # prompt = browser.switch_to.alert
+    # prompt.send_keys("My answer")
+    # prompt.accept()
+
+
+def redirect(browser):
+    button = browser.find_element_by_tag_name('button')
+    button.click()
+    new_window = browser.window_handles[1]
+    browser.switch_to.window(new_window)
+
+    x_element = browser.find_element_by_id('input_value')
+    x = int(x_element.text)
+    y = calc(x)
+    answer = browser.find_element_by_id('answer')
+    answer.send_keys(str(y))
+
+
+    button = browser.find_element_by_tag_name('button')
+    button.click()
+
+    alert = browser.switch_to.alert
+    alert_text = alert.text
+    result = alert_text.split(' ')[-1]
+    print(result)
+
+
+def simple(browser):
+    time.sleep(1)
+
+    button = browser.find_element_by_id("verify")
+    button.click()
+    message = browser.find_element_by_id("verify_message")
+
+    assert "successful" in message.text
+
+
+def main(func, link):
     try:
         browser = webdriver.Chrome()
         browser.get(link)
@@ -144,3 +211,24 @@ if __name__ == '__main__':
         time.sleep(30)
         # закрываем браузер после всех манипуляций
         browser.quit()
+
+
+if __name__ == '__main__':
+    # func, link = scroll, 'http://SunInJuly.github.io/execute_script.html'
+    # func, link = add_file, 'http://suninjuly.github.io/file_input.html'
+    # link = "http://suninjuly.github.io/find_link_text"
+    # link = "http://suninjuly.github.io/find_xpath_form"
+    # link = 'http://suninjuly.github.io/selects1.html'
+    # link = 'http://suninjuly.github.io/math.html'
+    # link = "http://suninjuly.github.io/registration1.html"
+    # link = "http://suninjuly.github.io/huge_form.html"
+    func, link = get_attr,'http://suninjuly.github.io/get_attribute.html'
+    # link = 'http://suninjuly.github.io/selects1.html'
+
+    # func, link = alert, 'http://suninjuly.github.io/alert_accept.html'
+    #func, link = redirect, 'http://suninjuly.github.io/redirect_accept.html'
+
+    #func, link = simple, 'http://suninjuly.github.io/wait1.html'
+
+    main(func, link)
+
